@@ -1,0 +1,10 @@
+[package]
+name = "stomach-acid"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+http-body-util = "0.1.2"
+hyper = { version = "0.14.28", default-features = false, features = ["client", "runtime", "http1", "http2", "server", "stream"] }
+md5 = "0.7.0"
+tokio = { version = "1.42.0", features = ["full"] }
