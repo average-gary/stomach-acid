@@ -1,7 +1,6 @@
 
 use hyper::{
-    client::HttpConnector,
-    header, Client, Method, Request,
+    body::HttpBody, client::HttpConnector, header, Client, Method, Request, Response,
 };
 
 #[tokio::main]
@@ -44,7 +43,7 @@ async fn main() -> Result<(), ()> {
         let response = format!("{:x}", md5::compute(format!("{}:{}:{}:{}:{}:{}", ha1, nonce, "00000001", cnonce, "auth", ha2)));
 
         let auth = format!(
-            "Digest username=\"{}\", realm=\"{}\", nonce=\"{}\", uri=\"{}\", response=\"{}\", cnonce=\"{}\", nc=00000001, qop=\"auth\"",
+            "Digest username=\"{}\", realm=\"{}\", nonce=\"{}\", uri=\"{}\", response=\"{}\", cnonce=\"{}\", nc=\"00000001\", qop=\"auth\"",
             username,
             realm,
             nonce,
@@ -61,8 +60,9 @@ async fn main() -> Result<(), ()> {
             .expect("request builder");
         println!("{:?}", request);
 
-        let response = client.request(request).await.unwrap();
-        println!("{:?}", response);
+        let mut response = client.request(request).await.unwrap();
+        let body = response.into_body();
+        println!("{:?}", body.collect().await.unwrap());
     }
     Ok(())
 }
